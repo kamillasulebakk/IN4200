@@ -1,8 +1,8 @@
 #include <stdio.h>
-/*
 #include <math.h>
+#include <time.h>
 
-int main(int argc, char const *argv[]) {
+int lim_1 () {
   float sum = 1;
   for (int i=2; i<1000; i+=4)
     sum = sum - 1/pow(2,i);
@@ -13,8 +13,8 @@ int main(int argc, char const *argv[]) {
 
   return 0;
 }
-*/
-int main(int argc, char const *argv[]) {
+
+int lim_2() {
   float sum = 0;
   float add = 1;
   for (int i=0; i<500; i++) {
@@ -23,6 +23,24 @@ int main(int argc, char const *argv[]) {
   }
 
   printf("%f\n", sum);
+
+  return 0;
+}
+
+int main() {
+  double time_spent = 0.0;
+  clock_t start, stop;
+  start = clock();
+  lim_1();
+  stop = clock();
+  time_spent = (double)(stop - start)/CLOCKS_PER_SEC;
+  printf("lim_1: %f s\n", time_spent);
+
+  start = clock();
+  lim_2();
+  stop = clock();
+  time_spent = (double)(stop - start)/CLOCKS_PER_SEC;
+  printf("lim_2: %f s\n", time_spent);
 
   return 0;
 }
