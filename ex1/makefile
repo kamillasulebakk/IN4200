@@ -1,7 +1,9 @@
 all: compile execute
 
 compile:
-	gcc ex1_1.c -lm -O2
+	gcc ex1_1d.c
+	# to link math library:
+	# gcc fname -lm
 
 execute:
-	./a.out
+	valgrind --leak-check=yes ./a.out
