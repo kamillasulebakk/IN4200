@@ -1,7 +1,7 @@
 all: compile execute
 
 compile:
-	gcc ex1_2a.c -lm
+	gcc ex2_3a.c -lm
 	# to link math library:
 	# gcc fname -lm
 
