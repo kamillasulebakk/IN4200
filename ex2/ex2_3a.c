@@ -60,10 +60,21 @@ void fill_v_fancy(double ***v, ci nx, ci ny, ci nz){
     }
 }
 
+bool array_3D_is_equal(double ***u, double ***v, ci length){
+  bool is_equal = true;
+  for (int i=0; i<length; i++)
+    if (abs(u[0][0][i] - v[0][0][i]) > 1e-8){
+      is_equal = false;
+      printf("%d  %f  %f \n", i, u[0][0][i], v[0][0][i]);
+    }
+
+  return is_equal;
+}
+
 int main(int argc, char const *argv[]) {
-  const int nx=100, ny=1000, nz=10000;
+  const int nx=100, ny=100, nz=1000, num_iter=100;
   int i,j,k;
-  double ***v, ***u, ***v1;
+  double ***v, ***u, ***v1, ***tmp;
 
   alloc_3d(&u, nx, ny, nz);
   for (i=0; i<nx*ny*nz; i++)
@@ -77,17 +88,26 @@ int main(int argc, char const *argv[]) {
   // fill_v_fancy(v1, nx, ny, nz);
   // print_3d(v1, nx, ny, nz);
 
-  // bool equal = true;
-  // for (i=0; i<nx*ny*nz; i++)
-  //   if (abs(v[0][0][i] - v1[0][0][i]) > 1e-8){
-  //     equal = false;
-  //     printf("%d  %f  %f \n", i, v[0][0][i], v1[0][0][i]);
-  //   }
-  //
-  // if (equal)
-  //   printf("Success!\n");
-  // else
-  //   printf("Nooo\n");
+  // const bool is_equal = array_3D_is_equal(v, v1, nx*ny*nz)
+  // if (equal) printf("Success!\n");
+  // else printf("Nooo\n");
+
+  for (int iter=1; iter<=num_iter; iter++){
+    for (i=1; i<nx-1; i++)
+      for (j=1; j<ny-1; j++)
+        for (k=1; k<nz-1; k++)
+          // mean of all neighboors
+          u[i][j][k] = v[i][j][k] + (v[i-1][j][k] + v[i][j-1][k] + v[i][j][k-1] - 6*v[i][j][k] + v[i+1][j][k] + v[i][j+1][k] + v[i][j][k+1])/6;
+    // printf("Iteration %d\nu\n", iter);
+    // print_3d(u, nx, ny, nz);
+    // printf("v\n");
+    // print_3d(v, nx, ny, nz);
+    tmp = u;
+    u = v;
+    v = tmp;
+  }
+
+
 
   free(u[0][0]); free(u[0]); free(u);
   free(v[0][0]); free(v[0]); free(v);
