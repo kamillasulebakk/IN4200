@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <time.h>
+
 
 double numerical_integration (double x_min, double x_max, int slices){
   double delta_x = (x_max-x_min)/slices;
@@ -11,7 +13,18 @@ double numerical_integration (double x_min, double x_max, int slices){
 }
 
 int main(int argc, char const *argv[]) {
-  double result = numerical_integration(0.0, 1.0, 100);
+  int n_div = 100;
+  double result;
+  result = numerical_integration(0.0, 1.0, n_div);
   printf("%f\n", result);
+
+  // counting cycles.
+  unsigned long long start = __rdtsc();
+  result = numerical_integration(0.0, 1.0, n_div);
+  unsigned long long end = __rdtsc();
+
+  double avg = (double)(end - start)/n_div;
+
+  printf("Average number of cycles: %lf\n", avg);
   return 0;
 }
