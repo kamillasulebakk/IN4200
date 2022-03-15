@@ -44,9 +44,9 @@ int printvec_d(double *y, int N)
 {
     printf("(");
     for (size_t i = 0; i < N-1; i++) {
-        printf("%4.0lf, ", y[i]);
+        printf("%4.3lf, ", y[i]);
     }
-    printf("%3.0lf", y[N-1]);
+    printf("%3.3lf", y[N-1]);
     printf(")\n");
     return 0;
 }
@@ -60,4 +60,34 @@ int printvec_i(int *y, int N)
     printf("%4d", y[N-1]);
     printf(")\n");
     return 0;
+}
+
+void swap(int* xp, int* yp)
+{
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+
+// Function to perform Selection Sort
+void sort_inplace(int *a, int *b, size_t n)
+{
+  size_t i, j, min_idx;
+
+  // One by one move boundary of unsorted subarray
+  for (i = 0; i < n - 1; i++) {
+    // Find the minimum element in unsorted array
+    min_idx = i;
+    for (j = i + 1; j < n; j++)
+      if (a[j] < a[min_idx])
+        min_idx = j;
+
+    // Swap the found minimum element
+    // with the first element
+    swap(&(a[min_idx]), &(a[i]));
+    swap(&(b[min_idx]), &(b[i]));
+
+  }
+  // for (i = 0; i < n; i++)
+  //   arr2[arr1[i]]
 }
