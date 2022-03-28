@@ -40,8 +40,8 @@ void PageRank_iterations (
 
   // printvec_d(scores, N);
 
-  //while (counter < 5) {
   while (epsilon <= diff){
+    // #pragma omp parallel shared(epsilon,diff)
     diff = 0;
     // Can this go outside loop ?
     W = 0.0;
@@ -56,6 +56,7 @@ void PageRank_iterations (
       new_scores[i] += (1 - d + d*W)*one_over_N;
       tmp_diff = fabs(new_scores[i] - scores[i]);
       if (tmp_diff > diff){
+        // #pragma omp critical
         diff = tmp_diff;
       }
     }
