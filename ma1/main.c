@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
 #include <omp.h>
 
 void read_graph_from_file (char *filename, int *N, int **row_ptr, int **col_idx, double **val);
@@ -9,35 +8,33 @@ void top_n_webpages (int N, double *scores, int n);
 
 int main(int argc, char const *argv[]) {
   double time_spent = 0.0;
-  clock_t start, stop;
+  double start, stop;
 
   int N=0, *row_ptr, *col_idx;
   double *val;
-  double d=0.85, epsilon=1e-6;
+  double d=1.00, epsilon=1e-7;
+  // double d=0.85, epsilon=1e-6;
   int n = 3;
 
   // read_graph_from_file("simple-webgraph.txt", &N, &row_ptr, &col_idx, &val);
-  // read_graph_from_file("simple-webgraph-invalid.txt", &N, &row_ptr, &col_idx, &val);
-  read_graph_from_file("100-webgraph.txt", &N, &row_ptr, &col_idx, &val);
+  read_graph_from_file("simple-webgraph-invalid.txt", &N, &row_ptr, &col_idx, &val);
+  // read_graph_from_file("100-webgraph.txt", &N, &row_ptr, &col_idx, &val);
   // read_graph_from_file("web-stanford.txt", &N, &row_ptr, &col_idx, &val);
 
 
   double *scores = malloc(N*sizeof(double));
 
-  start = clock();
-  #pragma omp parallel
-  {
-    PageRank_iterations(N, row_ptr, col_idx, val, d, epsilon, scores);
-  }
-  stop = clock();
-  time_spent = (double)(stop - start)/CLOCKS_PER_SEC;
-  printf("PageRank_iterations: %f s\n", time_spent);
+  start = omp_get_wtime();
+  PageRank_iterations(N, row_ptr, col_idx, val, d, epsilon, scores);
+  stop = omp_get_wtime();
+  time_spent = (double)(stop - start);
+  printf("PageRank_iterations with %d nodes: %f s\n", N, time_spent);
 
-  start = clock();
+  start = omp_get_wtime();
   top_n_webpages(N, scores, n);
-  stop = clock();
-  time_spent = (double)(stop - start)/CLOCKS_PER_SEC;
-  printf("top_n_webpages: %f s\n", time_spent);
+  stop = omp_get_wtime();
+  time_spent = (double)(stop - start);
+  printf("top_n_webpages with %d nodes: %f s\n", N, time_spent);
 
   free(row_ptr);
   free(col_idx);

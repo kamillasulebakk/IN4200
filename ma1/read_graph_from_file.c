@@ -38,22 +38,23 @@ void read_graph_from_file (char *filename, int *N, int **row_ptr, int **col_idx,
   for (i=0; i<edges; i++){
     fscanf(fp, "%d %d", &fromVal, &toVal);
     if (fromVal != toVal){
+      // filling arr with the number of outgoing links to each node
       arr[fromVal]++;
       fromID[i - invalid_entries] = fromVal;
       toID[i - invalid_entries] = toVal;
+      // filling row_ptr with number of incoming links to each node
       (*row_ptr)[toVal+1]++;
     }
     else
       invalid_entries++;
   }
+
   printf("Excluding %d invalid entries\n", invalid_entries);
   edges -= invalid_entries;
   if (invalid_entries > 0) {
     toID = realloc(toID, edges*sizeof(int));
     fromID = realloc(fromID, edges*sizeof(int));
   }
-  // printvec_i(fromID, edges);
-  // printvec_i(toID, edges);
 
   for (i=1; i<(*N+1); i++)
     (*row_ptr)[i] += (*row_ptr)[i-1];
@@ -61,8 +62,8 @@ void read_graph_from_file (char *filename, int *N, int **row_ptr, int **col_idx,
   sort_inplace(toID, fromID, edges);
   for (i = 0; i < (*N); i++) {
     start = (*row_ptr)[i], stop = (*row_ptr)[i+1];
-    sort_inplace(&(fromID[start]), &(toID[start]), stop - start);
-    // sort(fromID, start, stop);
+    // sort_inplace(&(fromID[start]), &(toID[start]), stop - start);
+    sort(fromID, start, stop);
   }
 
   *col_idx = fromID;
@@ -70,10 +71,6 @@ void read_graph_from_file (char *filename, int *N, int **row_ptr, int **col_idx,
   *val = malloc(edges*sizeof(double));
   for (i = 0; i < edges; i++)
     (*val)[i] = 1.0 / (double) arr[(*col_idx)[i]];
-
-  printvec_i(*row_ptr, *N+1);
-  printvec_i(*col_idx, edges);
-  // printvec_d(*val, edges);
 
   free(arr);
   free(toID);
