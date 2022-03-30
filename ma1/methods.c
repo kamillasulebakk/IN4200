@@ -75,26 +75,25 @@ void swap_d(double* xp, double* yp)
     *yp = temp;
 }
 
-// Function to perform Selection Sort
-void sort_inplace(int *a, int *b, size_t n)
-{
-  size_t i, j, min_idx;
-
-  // One by one move boundary of unsorted subarray
-  for (i = 0; i < n - 1; i++) {
-    // Find the minimum element in unsorted array
-    min_idx = i;
-    for (j = i + 1; j < n; j++)
-      if (a[j] < a[min_idx])
-        min_idx = j;
-
-    // Swap the found minimum element
-    // with the first element
-    swap_i(&(a[min_idx]), &(a[i]));
-    swap_i(&(b[min_idx]), &(b[i]));
-
-  }
-}
+// void sort_inplace(int *a, size_t n)
+// {
+//   size_t i, j, min_idx;
+//
+//   // One by one move boundary of unsorted subarray
+//   for (i = 0; i < n - 1; i++) {
+//     // Find the minimum element in unsorted array
+//     min_idx = i;
+//     for (j = i + 1; j < n; j++)
+//       if (a[j] < a[min_idx])
+//         min_idx = j;
+//
+//     if (min_idx != j){
+//     // Swap the found minimum element
+//     // with the first element
+//     swap_i(&(a[min_idx]), &(a[i]));
+//     }
+//   }
+// }
 
 void sort(int *arr, int start, int stop){
     if (start > stop + 1){

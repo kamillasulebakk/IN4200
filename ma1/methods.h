@@ -11,7 +11,7 @@ int printvec_d(double *y, int N);
 int printvec_i(int *y, int N);
 void swap_i(int* xp, int* yp);
 void swap_d(double* xp, double* yp);
-void sort_inplace(int *a, int *b, size_t n);
+// void sort_inplace(int *a, size_t n);
 void sort(int *arr, int start, int stop);
 
 #endif

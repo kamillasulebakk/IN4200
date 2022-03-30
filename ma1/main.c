@@ -12,15 +12,17 @@ int main(int argc, char const *argv[]) {
 
   int N=0, *row_ptr, *col_idx;
   double *val;
-  double d=1.00, epsilon=1e-7;
-  // double d=0.85, epsilon=1e-6;
   int n = 3;
 
+  // double d=1.00, epsilon=1e-7;
   // read_graph_from_file("simple-webgraph.txt", &N, &row_ptr, &col_idx, &val);
   // read_graph_from_file("simple-webgraph-invalid.txt", &N, &row_ptr, &col_idx, &val);
-  // read_graph_from_file("100-webgraph.txt", &N, &row_ptr, &col_idx, &val);
-  read_graph_from_file("web-stanford.txt", &N, &row_ptr, &col_idx, &val);
+  // read_graph_from_file("simple-webgraph-invalid_unsorted.txt", &N, &row_ptr, &col_idx, &val);
 
+  double d=0.85, epsilon=1e-6;
+  read_graph_from_file("100-webgraph.txt", &N, &row_ptr, &col_idx, &val);
+  // read_graph_from_file("web-stanford.txt", &N, &row_ptr, &col_idx, &val);
+  printf("finished read_graph_from_file\n");
 
   double *scores = malloc(N*sizeof(double));
 
