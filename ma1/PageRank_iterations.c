@@ -45,23 +45,21 @@ void PageRank_iterations (
   for (i=0; i<N; i++)
     scores[i] = one_over_N;
 
-  printf("Entering parallel region\n");
   #pragma omp parallel
   {
-  while (epsilon <= max_diff){
+  while (max_diff >= epsilon){
+    // need to make sure every thread enters the while-loop before max_diff is set to zero
+    #pragma omp barrier
     #pragma omp master
     {
     max_diff = 0;
     W = 0.0;
     }
 
-    #pragma omp barrier
-
     #pragma omp for reduction(+:W)
     for (i=0; i<num_dangling; i++)
       W += scores[dangling_nodes[i]];
 
-    // #pragma omp parallel for reduction(max:new_scores) private(i, idx, tmp_diff)
     #pragma omp for private(idx, tmp_diff) reduction(max: max_diff)
     for (i=0; i<N; i++) {
       new_scores[i] = 0.0;
@@ -75,7 +73,6 @@ void PageRank_iterations (
       }
     }
 
-    #pragma omp barrier
     #pragma omp master
     {
     // swap pointers to scores and new_scores

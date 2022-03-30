@@ -17,9 +17,9 @@ int main(int argc, char const *argv[]) {
   int n = 3;
 
   // read_graph_from_file("simple-webgraph.txt", &N, &row_ptr, &col_idx, &val);
-  read_graph_from_file("simple-webgraph-invalid.txt", &N, &row_ptr, &col_idx, &val);
+  // read_graph_from_file("simple-webgraph-invalid.txt", &N, &row_ptr, &col_idx, &val);
   // read_graph_from_file("100-webgraph.txt", &N, &row_ptr, &col_idx, &val);
-  // read_graph_from_file("web-stanford.txt", &N, &row_ptr, &col_idx, &val);
+  read_graph_from_file("web-stanford.txt", &N, &row_ptr, &col_idx, &val);
 
 
   double *scores = malloc(N*sizeof(double));
