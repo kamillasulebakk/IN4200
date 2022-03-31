@@ -4,7 +4,6 @@
 #include <stdlib.h> // malloc and free.
 #include <stdio.h>  // printf
 
-// int zeros2D(double ***A, int n, int m);
 int printvec_d(double *y, int N);
 int printvec_i(int *y, int N);
 void swap_i(int* xp, int* yp);
