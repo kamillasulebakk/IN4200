@@ -43,7 +43,7 @@ void top_n_webpages (int N, double *scores, int n){
   }
   } // end of the entire parallel region
 
-  printf("\nTop %d webpages: \n", n);
+  printf("\nIndices of top %d webpages: \n", n);
   printvec_i(indices, n);
 
   printf("\nScores in decreasing order: \n");

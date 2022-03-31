@@ -7,7 +7,7 @@
 This function reads a text file that contains a web graph, so that the
 corresponding hyperlink matrix is built up in the CRS forma
 */
-void read_graph_from_file (char *filename, int *N, int **row_ptr, int **col_idx, double **val){
+void read_graph_from_file (const char *filename, int *N, int **row_ptr, int **col_idx, double **val){
   int fromVal, toVal, invalid_entries = 0, edges = 0;
   size_t i, j, k, min_idx, start, stop;
 
@@ -48,7 +48,7 @@ void read_graph_from_file (char *filename, int *N, int **row_ptr, int **col_idx,
     else
       invalid_entries++;
   }
-  printf("Excluding %d invalid entries\n", invalid_entries);
+  printf("\nExcluding %d invalid entries\n", invalid_entries);
   edges -= invalid_entries;
   if (invalid_entries > 0) {
     toID = realloc(toID, edges*sizeof(int));
@@ -57,14 +57,6 @@ void read_graph_from_file (char *filename, int *N, int **row_ptr, int **col_idx,
 
   for (i = 1; i < (*N+1); i++)
     (*row_ptr)[i] += (*row_ptr)[i-1];
-
-  // sort_inplace(toID, fromID, edges);
-  // for (i = 0; i < (*N); i++) {
-  //   start = (*row_ptr)[i], stop = (*row_ptr)[i+1];
-  //   // sort_inplace(&(fromID[start]), &(toID[start]), stop - start);
-  //   sort(fromID, start, stop);
-  // }
-  // *col_idx = fromID;
 
   int *counter = malloc((*N)*sizeof(int));
   for (i = 0; i < *N; i++)
@@ -82,15 +74,8 @@ void read_graph_from_file (char *filename, int *N, int **row_ptr, int **col_idx,
 
   for (i = 0; i < (*N); i++) {
     start = (*row_ptr)[i], stop = (*row_ptr)[i+1];
-    // sort_inplace(&(*col_idx)[start], stop - start);
-    sort(*col_idx, start, stop);
+    sort_inplace(*col_idx, start, stop);
   }
-
-
-
-  // printvec_i(*col_idx, edges);
-
-
 
   *val = malloc(edges*sizeof(double));
   for (i = 0; i < edges; i++)

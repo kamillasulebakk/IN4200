@@ -1,44 +1,5 @@
 #include "methods.h"
 
-int zeros2D(double ***A, int n, int m)
-{
-    *A = malloc(n * sizeof *A);
-    (*A)[0] = malloc(n*m * sizeof (*A)[0]);
-    if (!(*A)[0] || !*A){
-        // Allocation failed.
-        printf("Allocation failed\n");
-        return 1;
-    }
-
-    for (size_t i = 1; i < n; i++)
-        (*A)[i] = &((*A)[0][i*m]);
-    for (size_t i = 0; i < n*m; i++)
-      (*A)[0][i] = 0.0;
-    return 0;
-}
-
-// Free pointers allocated in alloc2D.
-int free2D(double **A)
-{
-    free(A[0]);
-    free(A);
-    return 0;
-}
-
-// Print matrix values.
-int printmat(double **A, int n, int m)
-{
-    for (size_t i = 0; i < n; ++i){
-        printf("| ");
-        for (size_t j = 0; j < m; ++j){
-            printf("%6.2lf ", A[i][j]);
-        }
-        printf("|\n");
-    }
-    return 0;
-}
-
-
 int printvec_d(double *y, int N)
 {
     printf("(");
@@ -75,38 +36,18 @@ void swap_d(double* xp, double* yp)
     *yp = temp;
 }
 
-// void sort_inplace(int *a, size_t n)
-// {
-//   size_t i, j, min_idx;
-//
-//   // One by one move boundary of unsorted subarray
-//   for (i = 0; i < n - 1; i++) {
-//     // Find the minimum element in unsorted array
-//     min_idx = i;
-//     for (j = i + 1; j < n; j++)
-//       if (a[j] < a[min_idx])
-//         min_idx = j;
-//
-//     if (min_idx != j){
-//     // Swap the found minimum element
-//     // with the first element
-//     swap_i(&(a[min_idx]), &(a[i]));
-//     }
-//   }
-// }
-
-void sort(int *arr, int start, int stop){
+void sort_inplace(int *arr, int start, int stop){
     if (start > stop + 1){
-        int piv = arr[start], l = start + 1, r = stop;
-        while (l < r){
-            if (arr[l] <= piv)
-                l++;
+        int pivotValue = arr[start], left = start + 1, right = stop;
+        while (left < right){
+            if (arr[left] <= pivotValue)
+                left++;
         else
-            swap_i(&arr[l], &arr[--r]);
+            swap_i(&arr[left], &arr[--right]);
         }
-    swap_i(&arr[--l], &arr[start]);
-    sort(arr, start, l);
-    sort(arr, r, stop);
+    swap_i(&arr[--left], &arr[start]);
+    sort_inplace(arr, start, left);
+    sort_inplace(arr, right, stop);
     }
 }
 

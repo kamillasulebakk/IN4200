@@ -26,7 +26,7 @@ void PageRank_iterations (
     node_is_dangling[col_idx[i]] = 0;
 
   int *dangling_nodes = malloc(N*sizeof(int));
-  // #pragma omp parallel for reduction(+:num_dangling)
+  // this loop can not be parallelized because iterations are dependent on each other
   for (i=0; i<N; i++)
     if (node_is_dangling[i] == 1) {
       dangling_nodes[num_dangling] = i;
@@ -37,8 +37,8 @@ void PageRank_iterations (
   dangling_nodes = realloc(dangling_nodes, num_dangling*sizeof(int));
 
   if (num_dangling > 0){
-    printf("Number of dangling nodes %d\n", num_dangling);
-    printvec_i(dangling_nodes, num_dangling);
+    printf("\nNumber of dangling nodes %d\n", num_dangling);
+    // printvec_i(dangling_nodes, num_dangling);
   }
 
   #pragma omp parallel for
@@ -85,8 +85,7 @@ void PageRank_iterations (
   } // end of the entire parallel region
 
 
-  printf("Number of iterations until convergence:\n");
-  printf("%d\n", counter);
+  printf("\nNumber of iterations until convergence: %d\n", counter);
 
   // needed so that the right array are copied into final array with scores
   if (counter % 2 == 1) {
