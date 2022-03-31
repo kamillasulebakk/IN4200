@@ -11,6 +11,7 @@ In this assignment we have red a text file that contains a web graph, so that th
   * omp.h
   * time.h
 
+
 ## How to run the code:
 Open terminal window and type "make". This command compile and execute all programs.
 
@@ -27,8 +28,11 @@ Here;
 * 0.85: corresponds to the damping constant *d*
 * 1e-6: corresponds to the convergence threshold value *ε*
 * 10: corresponds to the value of *n* related to showing the top 10 webpages
+
 These command line arguments can of course be changed as desired. This is done in the makefile.
 
+
+## Files:
 This project contains the following 6 files:
 * main.c
 * read_graph_from_file.c
@@ -36,7 +40,6 @@ This project contains the following 6 files:
 * top_n_webpages.c
 * methods.h
 * methods.c
-
 
 Here;
 * main.c, contains a main program that initializes needed pointers and accepts, on the command line, the filename, *d*, *ε* and *n*. Further, the main program calls the three functions: read_graph_from_file, PageRank_iterations and top_n_webpages.
@@ -51,6 +54,8 @@ Here;
 
 * methods.c, contains different functions that are used many times.
 
+
+## Output:
 Below, we give the terminal output for the command line arguments listed above. These results have been produced using gcc version 13.0.
 
 ```
