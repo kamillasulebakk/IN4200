@@ -3,6 +3,8 @@
 #include <omp.h>
 #include <time.h>
 
+#include "methods.h"
+
 void read_graph_from_file (const char *filename, int *N, int **row_ptr, int **col_idx, double **val);
 void PageRank_iterations (int N, int *row_ptr, int *col_idx, double *val, double d, double epsilon, double *scores);
 void top_n_webpages (int N, double *scores, int n);
@@ -46,6 +48,8 @@ int main(int argc, char const *argv[]) {
   stop = omp_get_wtime();
   time_spent = (double)(stop - start);
   printf("\nPageRank_iterations finished in %f s\n", time_spent);
+  printf("scores:\n");
+  printvec_d(scores, N);
 
   start = omp_get_wtime();
   top_n_webpages(N, scores, n);
