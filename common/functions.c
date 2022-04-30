@@ -69,7 +69,7 @@ void iso_diffusion_denoising(image *u, image *u_bar, float kappa, int iters)
     u_bar->image_data[m-1][j] = u->image_data[m-1][j];
   }
 
-  for (size_t count = 0; count < iters; count++){
+  for (size_t count = 1; count < iters; count++){
     for (size_t i = 1; i < m - 1; i++){
       for (size_t j = 1; j < n - 1; j++){
         u_bar->image_data[i][j] = u->image_data[i][j] + kappa*(u->image_data[i-1][j]

@@ -51,39 +51,7 @@ void convert_image_to_jpeg(const image *u, unsigned char* image_chars)
   }
 }
 
-void iso_diffusion_denoising(image *u, image *u_bar, float kappa, int iters)
+void iso_diffusion_denoising_parallel(image *u, image *u_bar, float kappa, int iters)
 {
-  image *temp;
-  int m = u->m;
-  int n = u->n;
-  // float** u = u->image_data;
-  // float** u_bar = u_bar->image_data;
-
-  for (size_t i = 0; i < m; i++){
-    u_bar->image_data[i][0] = u->image_data[i][0];
-    u_bar->image_data[i][n-1] = u->image_data[i][n-1];
-  }
-
-  for (size_t j = 0; j < n; j++){
-    u_bar->image_data[0][j] = u->image_data[0][j];
-    u_bar->image_data[m-1][j] = u->image_data[m-1][j];
-  }
-
-  for (size_t count = 0; count < iters; count++){
-    for (size_t i = 1; i < m - 1; i++){
-      for (size_t j = 1; j < n - 1; j++){
-        u_bar->image_data[i][j] = u->image_data[i][j] + kappa*(u->image_data[i-1][j]
-                                  + u->image_data[i][j-1] - 4*u->image_data[i][j]
-                                  + u->image_data[i][j+1] + u->image_data[i+1][j]);
-      }
-    }
-
-    temp = u;
-    u = u_bar;
-    u_bar = temp;
-  }
-
-  temp = u;
-  u = u_bar;
-  u_bar = temp;
+printf("hello\n");
 }
