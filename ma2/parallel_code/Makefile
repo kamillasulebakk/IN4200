@@ -16,6 +16,10 @@ parallel_main: $(OBJS) $(DEP)
 simple-jpeg:
 	$(MAKE) -C ../simple-jpeg
 
+test:
+	gcc test_utils.c utils.c -o test_utils
+	./test_utils
+
 obj-clean:
 	$(RM) *.o
 
@@ -30,4 +34,3 @@ clean:
 	$(MAKE) exec-clean
 	$(MAKE) autosave-clean
 	$(MAKE) -C ../simple-jpeg clean
-

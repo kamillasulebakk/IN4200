@@ -19,8 +19,8 @@ int main(int argc, char *argv[])
 
   kappa = 0.1; //atof(argv[1]);
   iters = 5; //atoi(argv[2]);
-  input_jpeg_filename = "noisy_mona_lisa.jpg"; // argv[3];
-  output_jpeg_filename = "denoised_mona_lisa.jpg"; // argv[4];
+  input_jpeg_filename = "../img/noisy_mona_lisa.jpg"; // argv[3];
+  output_jpeg_filename = "../img/denoised_mona_lisa.jpg"; // argv[4];
 
   import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
   printf("Succeeded! vertical pixels: %d, horizontal pixels: %d, num components: %d\n",
@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
   convert_image_to_jpeg (&u_bar, image_chars);
   export_JPEG_file(output_jpeg_filename, image_chars, m, n, c, 75);
 
+  free(image_chars);
   deallocate_image (&u);
   deallocate_image (&u_bar);
 

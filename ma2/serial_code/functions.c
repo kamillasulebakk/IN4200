@@ -1,7 +1,4 @@
 #include "functions.h"
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 void allocate_image(image *u, int m, int n)
 {
@@ -9,21 +6,14 @@ void allocate_image(image *u, int m, int n)
   u->n = n;
 
   u->image_data = malloc(m*sizeof(float *));
-  // for each row, malloc space for its column elements and add it to
-  // the array of arrays
-  for (size_t i = 0; i < m; i++) {
-  // malloc space for row i's m column elements
-      u->image_data[i] = malloc(n*sizeof(float));
-  }
+  u->image_data[0] = malloc(m*n*sizeof(float));
+  for (size_t i = 1; i < m; i++)
+    u->image_data[i] = &(u->image_data[i-1][n]);
 }
 
 void deallocate_image(image *u)
 {
-  int m = u->m;
-
-  for (size_t i = 0; i < m; i++){
-    free(u->image_data[i]);
-  }
+  free(u->image_data[0]);
   free(u->image_data);
 }
 

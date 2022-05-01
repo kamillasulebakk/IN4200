@@ -1,5 +1,5 @@
-#ifndef FUNCTIONS_H
-#define FUNCTIONS_H
+#ifndef SERIAL_FUNCTIONS_H
+#define SERIAL_FUNCTIONS_H
 
 #include <stdlib.h>
 #include <stdio.h>
