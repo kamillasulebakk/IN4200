@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
   image u, u_bar;
   unsigned char *image_chars, *my_image_chars;
   char *input_jpeg_filename, *output_jpeg_filename;
-  int *send_counts, *Sdispls;
+  int *send_counts, *displs;
 
   MPI_Init (&argc, &argv);
   MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
   kappa = 0.1; //atof(argv[1]);
   iters = 5; //atoi(argv[2]);
   input_jpeg_filename = "noisy_mona_lisa.jpg"; // argv[3];
-  output_jpeg_filename = "denoised_mona_lisa.jpg"; // argv[4];
+  output_jpeg_filename = "denoised_mona_lisa_parallel.jpg"; // argv[4];
 
   if (i_am_root)
     import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
@@ -36,13 +36,13 @@ int main(int argc, char *argv[])
   const int my_m = calculate_my_m(my_rank, num_procs, m);
 
   if (i_am_root)
-    calculate_counts_and_displacement(&send_counts, &Sdispls, num_procs, m, n);
+    calculate_counts_and_displacement(&send_counts, &displs, num_procs, m, n);
 
   my_image_chars = malloc(my_m*n*sizeof(unsigned char));
 
   MPI_Scatterv(
-    image_chars, send_counts, Sdispls, MPI_INT,
-    my_image_chars, my_m*n, MPI_INT, 0, MPI_COMM_WORLD
+    image_chars, send_counts, displs, MPI_CHAR,
+    my_image_chars, my_m*n, MPI_CHAR, 0, MPI_COMM_WORLD
   );
 
   allocate_image (&u, my_m, n);
@@ -55,7 +55,15 @@ int main(int argc, char *argv[])
   /* process 0 receives from each process incoming values and */
   /* copy them into the designated region of struct whole_image */
   /* ... */
-  // MPI_Gather(my_length, 1, MPI_INT, num_rows[my_rank], 1, MPI_INT, 0, MPI_COMM_WORLD);
+  const int rows_to_send = my_m - overlap_above(my_rank) - overlap_below(my_rank);
+  for (size_t rank = 0; rank < num_procs; rank++)
+    send_counts[rank] -= (overlap_above(rank) + overlap_below(rank))*n;
+  for (size_t rank = 1; rank < num_procs; rank++)
+    displs[rank] = displs[rank-1] + send_counts[rank];
+
+  MPI_Gatherv(
+    my_image_chars, rows_to_send*n, MPI_CHAR,
+    image_chars, send_counts, displs, MPI_CHAR, 0, MPI_COMM_WORLD);
 
   if (i_am_root) {
     export_JPEG_file(output_jpeg_filename, image_chars, m, n, c, 75);
@@ -63,7 +71,7 @@ int main(int argc, char *argv[])
 
   deallocate_image (&u);
   deallocate_image (&u_bar);
-  free(send_counts); free(Sdispls);
+  free(send_counts); free(displs);
   MPI_Finalize ();
 
   return 0;

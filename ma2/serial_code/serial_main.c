@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
   kappa = 0.1; //atof(argv[1]);
   iters = 5; //atoi(argv[2]);
   input_jpeg_filename = "../img/noisy_mona_lisa.jpg"; // argv[3];
-  output_jpeg_filename = "../img/denoised_mona_lisa.jpg"; // argv[4];
+  output_jpeg_filename = "../img/denoised_mona_lisa_serial.jpg"; // argv[4];
 
   import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
   printf("Succeeded! vertical pixels: %d, horizontal pixels: %d, num components: %d\n",
