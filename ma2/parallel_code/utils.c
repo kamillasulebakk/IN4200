@@ -25,7 +25,7 @@ void calculate_counts_and_displacement(
 ) {
   *send_counts = malloc(num_procs*sizeof(int));
   *Sdispls = malloc(num_procs*sizeof(int));
-  
+
   for (int rank = 0; rank < num_procs; rank++){
     (*send_counts)[rank] = calculate_my_m(rank, num_procs, m)*n;
   }
@@ -38,4 +38,13 @@ void calculate_counts_and_displacement(
     if (overlap_below(rank-1, num_procs))
       (*Sdispls)[rank] -= n;
   }
+}
+
+void edit_counts_and_displs_from_scatter_to_gather(
+  int *send_counts, int *displs, const int num_procs, const int n
+) {
+  for (size_t rank = 0; rank < num_procs; rank++)
+    send_counts[rank] -= (overlap_above(rank) + overlap_below(rank, num_procs))*n;
+  for (size_t rank = 1; rank < num_procs; rank++)
+    displs[rank] = displs[rank-1] + send_counts[rank-1];
 }

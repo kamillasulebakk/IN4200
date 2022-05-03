@@ -9,6 +9,9 @@ DEP = functions.h
 
 all: simple-jpeg $(PROJ)
 
+run:
+	./serial_main 0.1 200
+
 serial_main: $(OBJS) $(DEP)
 	$(CC) $(CFLAGS) *.c -o $@ $(LDFLAGS)
 

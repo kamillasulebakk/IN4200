@@ -2,15 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "functions.h"
+#include "utils.h"
 #include "../simple-jpeg/import_export_jpeg.h"
 
 int main(int argc, char *argv[])
 {
-  int m, n, c, iters;
+  int m, n, c;
   int my_rank, num_procs;
-  float kappa;
   image u, u_bar;
   unsigned char *image_chars, *my_image_chars;
   char *input_jpeg_filename, *output_jpeg_filename;
@@ -22,10 +23,10 @@ int main(int argc, char *argv[])
 
   const bool i_am_root = (my_rank == 0);
 
-  kappa = 0.1; //atof(argv[1]);
-  iters = 5; //atoi(argv[2]);
-  input_jpeg_filename = "noisy_mona_lisa.jpg"; // argv[3];
-  output_jpeg_filename = "denoised_mona_lisa_parallel.jpg"; // argv[4];
+  const float kappa = atof(argv[1]);
+  const int iters = atoi(argv[2]);
+  input_jpeg_filename = "../img/noisy_mona_lisa.jpg"; // argv[3];
+  output_jpeg_filename = "../img/denoised_mona_lisa_parallel.jpg"; // argv[4];
 
   if (i_am_root)
     import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
@@ -50,20 +51,18 @@ int main(int argc, char *argv[])
 
   convert_jpeg_to_image (my_image_chars, &u);
   iso_diffusion_denoising_parallel (&u, &u_bar, kappa, iters);
+  convert_image_to_jpeg(&u_bar, my_image_chars);
 
-  /* each process sends its resulting content of u_bar to process 0 */
-  /* process 0 receives from each process incoming values and */
-  /* copy them into the designated region of struct whole_image */
-  /* ... */
-  const int rows_to_send = my_m - overlap_above(my_rank) - overlap_below(my_rank);
-  for (size_t rank = 0; rank < num_procs; rank++)
-    send_counts[rank] -= (overlap_above(rank) + overlap_below(rank))*n;
-  for (size_t rank = 1; rank < num_procs; rank++)
-    displs[rank] = displs[rank-1] + send_counts[rank];
+  const int rows_to_send = my_m - overlap_above(my_rank) - overlap_below(my_rank, num_procs);
+  if (i_am_root)
+    edit_counts_and_displs_from_scatter_to_gather(
+      send_counts, displs, num_procs, n
+    );
 
   MPI_Gatherv(
-    my_image_chars, rows_to_send*n, MPI_CHAR,
-    image_chars, send_counts, displs, MPI_CHAR, 0, MPI_COMM_WORLD);
+    &(my_image_chars[overlap_above(my_rank)*n]), rows_to_send*n, MPI_CHAR,
+    image_chars, send_counts, displs, MPI_CHAR, 0, MPI_COMM_WORLD
+  );
 
   if (i_am_root) {
     export_JPEG_file(output_jpeg_filename, image_chars, m, n, c, 75);
@@ -71,8 +70,16 @@ int main(int argc, char *argv[])
 
   deallocate_image (&u);
   deallocate_image (&u_bar);
-  free(send_counts); free(displs);
+  free(my_image_chars);
+  if (i_am_root){
+    free(send_counts);
+    free(displs);
+    free(image_chars);
+  }
   MPI_Finalize ();
+
+  if (i_am_root)
+    printf("Done :)\n");
 
   return 0;
 }

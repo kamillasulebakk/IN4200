@@ -19,22 +19,16 @@ void deallocate_image(image *u)
 
 void convert_jpeg_to_image(const unsigned char* image_chars, image *u)
 {
-  const int m = u->m;
-  const int n = u->n;
-
-  for (size_t i = 0; i < m; i++)
-    for (size_t j = 0; j < n; j++)
-      u->image_data[i][j] = image_chars[i*n + j];
+  for (size_t i = 0; i < u->m; i++)
+    for (size_t j = 0; j < u->n; j++)
+      u->image_data[i][j] = image_chars[i*u->n + j];
 }
 
 void convert_image_to_jpeg(const image *u, unsigned char* image_chars)
 {
-  const int m = u->m;
-  const int n = u->n;
-
-  for (size_t i = 0; i < m; i++)
-    for (size_t j = 0; j < n; j++)
-      image_chars[i*n + j] = u->image_data[i][j];
+  for (size_t i = 0; i < u->m; i++)
+    for (size_t j = 0; j < u->n; j++)
+      image_chars[i*u->n + j] = u->image_data[i][j];
 }
 
 void swap(image *u, image *u_bar)
