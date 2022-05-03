@@ -1,7 +1,6 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
 
 #include "functions.h"
@@ -16,20 +15,25 @@ int main(int argc, char *argv[])
   unsigned char *image_chars, *my_image_chars;
   char *input_jpeg_filename, *output_jpeg_filename;
   int *send_counts, *displs;
+  double start, stop;
+
+  const float kappa = atof(argv[1]);
+  const int iters = atoi(argv[2]);
+  input_jpeg_filename = argv[3];
+  output_jpeg_filename = argv[4];
 
   MPI_Init (&argc, &argv);
   MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);
   MPI_Comm_size (MPI_COMM_WORLD, &num_procs);
 
+  start = MPI_Wtime();
+
   const bool i_am_root = (my_rank == 0);
 
-  const float kappa = atof(argv[1]);
-  const int iters = atoi(argv[2]);
-  input_jpeg_filename = "../img/noisy_mona_lisa.jpg"; // argv[3];
-  output_jpeg_filename = "../img/denoised_mona_lisa_parallel.jpg"; // argv[4];
-
-  if (i_am_root)
+  if (i_am_root){
     import_JPEG_file(input_jpeg_filename, &image_chars, &m, &n, &c);
+    printf("Succeeded! (H, W, C) = (%d, %d, %d)\n", m, n, c);
+  }
 
   MPI_Bcast (&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast (&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -78,12 +82,9 @@ int main(int argc, char *argv[])
   }
   MPI_Finalize ();
 
+  stop = MPI_Wtime();
   if (i_am_root)
-    printf("Done :)\n");
+    printf("Program finished after: %.3f seconds\n", stop - start);
 
   return 0;
 }
-
-
-// mpirun -np 4 ./a.out
-// here 4 stands for 4 processors

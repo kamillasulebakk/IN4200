@@ -10,7 +10,7 @@ DEP = functions.h
 all: simple-jpeg $(PROJ)
 
 run:
-	./serial_main 0.1 200
+	./serial_main 0.1 200 ../img/noisy_mona_lisa.jpg ../img/denoised_mona_lisa_serial.jpg 
 
 serial_main: $(OBJS) $(DEP)
 	$(CC) $(CFLAGS) *.c -o $@ $(LDFLAGS)

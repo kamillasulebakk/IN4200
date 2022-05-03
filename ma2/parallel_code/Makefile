@@ -1,7 +1,7 @@
-# CC = mpicc
-CC = /usr/lib64/openmpi/bin/mpicc
-# executor = mpirun
-executor = /usr/lib64/openmpi/bin/mpirun
+CC = mpicc
+# CC = /usr/lib64/openmpi/bin/mpicc
+executor = mpirun
+# executor = /usr/lib64/openmpi/bin/mpirun
 CFLAGS = -O2
 LDFLAGS = -L../simple-jpeg/ -lsimplejpeg
 
@@ -13,7 +13,7 @@ DEP = functions.h ../serial_code/functions.h
 all: simple-jpeg $(PROJ)
 
 run:
-	$(executor) -np 4 ./parallel_main 0.1 200
+	$(executor) -np 2 ./parallel_main 0.1 200 ../img/noisy_mona_lisa.jpg ../img/denoised_mona_lisa_parallel.jpg
 
 parallel_main: $(OBJS) $(DEP)
 	$(CC) $(CFLAGS) *.c ../serial_code/functions.c -o $@ $(LDFLAGS)
